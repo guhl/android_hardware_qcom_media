@@ -4391,10 +4391,13 @@ OMX_ERRORTYPE  omx_vdec::use_output_buffer(
                 return OMX_ErrorBadParameter;
             }
 
-            if ((OMX_U32)handle->size < drv_ctx.op_buf.buffer_size) {
+	    // guhl: set the expected buffer size to op_buf.buffer_size - extradata_info.buffer_size
+	    unsigned int expected_buffer_size;
+	    expected_buffer_size = drv_ctx.op_buf.buffer_size - drv_ctx.extradata_info.buffer_size;
+            if ((OMX_U32)handle->size < expected_buffer_size ) {
                 DEBUG_PRINT_ERROR("Insufficient sized buffer given for playback,"
                         " expected %u, got %lu",
-                        drv_ctx.op_buf.buffer_size, (OMX_U32)handle->size);
+                        expected_buffer_size, (OMX_U32)handle->size);
                 return OMX_ErrorBadParameter;
             }
 
